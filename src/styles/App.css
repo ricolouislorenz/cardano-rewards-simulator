@@ -1,0 +1,148 @@
+/* src/styles/App.css */
+
+body {
+  font-family: 'Rubik', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #fff;
+  color: black;
+}
+
+header {
+  background-color: rgb(36, 37, 38);
+  color: white;
+  padding: 10px 0;
+}
+
+.container {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 50px;
+  margin-right: 20px;
+}
+
+nav {
+  flex: 1;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  width: 75%;
+  justify-content: flex-start;
+}
+
+nav ul li {
+  margin: 0;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+main {
+  margin: 0;
+  padding: 0;
+}
+
+.intro {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 400px; /* Höhe anpassen */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Links ausgerichtet */
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.intro h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.buttons-container {
+  margin-top: 20px;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.btn {
+  background-color: rgb(36, 37, 38);
+  color: white;
+  padding: 15px 30px;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 50px;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #303132;
+}
+
+@media (max-width: 768px) {
+  .container {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  nav ul {
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+  }
+
+  .intro {
+      min-height: 300px; /* Höhe anpassen */
+      justify-content: center;
+      align-items: center; /* Zentriert auf kleinen Bildschirmen */
+  }
+
+  .intro h1 {
+      font-size: 2em;
+  }
+
+  .buttons-container {
+      justify-content: center;
+      padding-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro {
+      min-height: 250px; /* Höhe anpassen */
+  }
+
+  .intro h1 {
+      font-size: 1.5em;
+  }
+
+  .btn {
+      padding: 10px 20px;
+  }
+}

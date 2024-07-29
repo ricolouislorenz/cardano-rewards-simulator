@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Parameter Simulation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Parameter Simulation</h1>
+    <form id="simulation-form">
+        <label for="rho">Rho:</label>
+        <input type="text" id="rho" name="rho"><br>
+        <label for="tau">Tau:</label>
+        <input type="text" id="tau" name="tau"><br>
+        <label for="eta">Eta:</label>
+        <input type="text" id="eta" name="eta"><br>
+        <label for="p">P:</label>
+        <input type="text" id="p" name="p"><br>
+        <label for="frew">Frew:</label>
+        <input type="text" id="frew" name="frew"><br>
+        <label for="stake">Stake:</label>
+        <input type="text" id="stake" name="stake"><br>
+        <label for="pool">Pool:</label>
+        <input type="text" id="pool" name="pool"><br>
+        <button type="submit">Simulate</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById('simulation-form').onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            fetch('/api/simulate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+            });
+        };
+    </script>
+</body>
+</html>

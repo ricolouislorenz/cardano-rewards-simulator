@@ -1,20 +1,29 @@
 import React from 'react';
+import { Box, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 
 const NavigationBar = ({ current, total, onNavigate, answers }) => {
   return (
-    <div>
-      <p>Navigation:</p>
+    <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', mt: 2 }}>
       {[...Array(total).keys()].map((index) => (
-        <button
+        <Button
           key={index}
           onClick={() => onNavigate(index + 1)}
-          style={{ backgroundColor: current === index + 1 ? 'lightblue' : 'white' }}
+          sx={{
+            backgroundColor: current === index + 1 ? '#007BFF' : answers[index] !== null ? '#424242' : 'white',
+            color: current === index + 1 ? 'white' : answers[index] !== null ? 'white' : 'black',
+            minWidth: '40px',
+            margin: '5px',
+            padding: '10px',
+            '&:hover': {
+              backgroundColor: current === index + 1 ? '#007BFF' : answers[index] !== null ? '#616161' : 'lightgrey',
+            },
+          }}
         >
-          {index + 1} {answers[index] !== null ? '(Beantwortet)' : ''}
-        </button>
+          {index + 1}
+        </Button>
       ))}
-    </div>
+    </Box>
   );
 };
 

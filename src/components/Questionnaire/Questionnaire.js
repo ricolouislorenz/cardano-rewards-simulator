@@ -1,8 +1,7 @@
-// src/components/Questionnaire/Questionnaire.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Question from './Question';
-import ProgressBar from './ProgressBar';
+import NavigationBar from './NavigationBar';
 import { Container, Typography, Box, Button } from '@mui/material';
 import '../../styles/App.css';
 
@@ -41,7 +40,6 @@ const Questionnaire = () => {
   const navigate = useNavigate();
 
   const handleAnswer = (index, answer, weight) => {
-    console.log(`Question ${index + 1} answered: ${answer}`);
     const newAnswers = [...answers];
     newAnswers[index] = answer;
     setAnswers(newAnswers);
@@ -50,15 +48,18 @@ const Questionnaire = () => {
     newScores[index] = weight;
     setScores(newScores);
 
-    console.log('Current answers:', newAnswers);
-    console.log('Current scores:', newScores);
-    console.log('Current Question Index:', currentQuestionIndex);
+    const allAnswered = newAnswers.every(answer => answer !== null);
 
-    if (index + 1 < totalQuestions) {
-      setCurrentQuestionIndex(index + 1);
-    } else {
-      console.log('Navigating to evaluation with scores:', newScores);
+    if (allAnswered) {
       navigate('/evaluation', { state: { scores: newScores } });
+    } else {
+      const higherUnanswered = newAnswers.slice(index + 1).findIndex(answer => answer === null);
+      if (higherUnanswered !== -1) {
+        setCurrentQuestionIndex(index + higherUnanswered + 1 + 1);
+      } else {
+        const firstUnanswered = newAnswers.findIndex(answer => answer === null);
+        setCurrentQuestionIndex(firstUnanswered + 1);
+      }
     }
   };
 
@@ -71,40 +72,37 @@ const Questionnaire = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: 'left', paddingTop: '20px', paddingBottom: '20px', color: 'black' }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ marginTop: '20px' }}>
+    <Container maxWidth="md" sx={{ textAlign: 'center', paddingTop: '40px', paddingBottom: '40px', color: 'black' }}>
+      <Typography variant="h3" component="h1" gutterBottom sx={{ marginTop: '20px' }}>
         Questionnaire
       </Typography>
       {currentQuestionIndex === 0 ? (
         <Box>
-          <Typography variant="body1" gutterBottom>
-            Welcome to the questionnaire. Click &quot;Start&quot; to begin.
+          <Typography variant="h6" gutterBottom>
+            The questionnaire is designed to capture user preferences across four dimensions: Scalability, Security, Decentralization (the Blockchain Trilemma), and Adoption, which is a crucial factor for Cardano.
           </Typography>
-          <Button variant="contained" onClick={startQuestionnaire}>Start</Button>
+          <Typography variant="h6" gutterBottom>
+            Through 20 questions, the survey identifies user settings and preferences, creating a profile represented by a color code that reflects individual attitudes toward each dimension as well as an overall impression.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            In the future, it will be possible to compare your preferences with those of votes, DReps, or other users to gain better contextual insights.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            The questionnaire and its evaluation do not claim to be scientifically comprehensive or to encompass all aspects fully; rather, they aim to highlight basic attitudes and tendencies. 
+          </Typography>
+          <Button variant="contained" sx={{ backgroundColor: '#424242', margin: '20px auto', padding: '10px 20px' }} onClick={startQuestionnaire}>Start</Button>
         </Box>
       ) : (
         <Box>
           <Question
-            key={currentQuestionIndex}
+            key={`question-${currentQuestionIndex}`}
             question={questions[currentQuestionIndex - 1]}
             index={currentQuestionIndex - 1}
             onAnswer={handleAnswer}
             weight={weights[currentQuestionIndex - 1]}
           />
           <Box sx={{ marginTop: '40px' }}>
-            <ProgressBar current={currentQuestionIndex} total={totalQuestions} />
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', marginTop: 4 }}>
-              {[...Array(totalQuestions).keys()].map((index) => (
-                <Button
-                  key={index}
-                  variant="contained"
-                  onClick={() => goToQuestion(index + 1)}
-                  sx={{ backgroundColor: currentQuestionIndex === index + 1 ? 'lightblue' : 'white', color: 'black', minWidth: '40px' }}
-                >
-                  {index + 1}
-                </Button>
-              ))}
-            </Box>
+            <NavigationBar current={currentQuestionIndex} total={totalQuestions} onNavigate={goToQuestion} answers={answers} />
           </Box>
         </Box>
       )}

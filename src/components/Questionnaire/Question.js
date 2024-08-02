@@ -1,14 +1,23 @@
-// src/components/Questionnaire/Question.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import speechbubble from '../../assets/speechbubble.png';
 import '../../styles/App.css';
 
 const Question = ({ question, index, onAnswer, weight }) => {
+  useEffect(() => {
+    console.log(`Rendering question ${index + 1}: ${question}`);
+  }, [question, index]);
+
   const handleAnswer = (answer) => {
-    console.log(`Button clicked: ${answer}`);
-    onAnswer(index, answer, weight);
+    console.log(`Answer for question ${index + 1}:`, answer);
+    const weightedAnswer = {
+      decentralization: weight.decentralization * answer,
+      scalability: weight.scalability * answer,
+      security: weight.security * answer,
+      adoption: weight.adoption * answer,
+    };
+    onAnswer(index, answer, weightedAnswer);
   };
 
   return (
@@ -20,7 +29,7 @@ const Question = ({ question, index, onAnswer, weight }) => {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         padding: '60px',
-        minHeight: '400px', 
+        minHeight: '400px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -30,10 +39,10 @@ const Question = ({ question, index, onAnswer, weight }) => {
     >
       <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center' }}>{question}</Typography>
       <Box sx={{ display: 'flex', gap: 2, marginTop: '20px' }}>
-        <Button variant="contained" onClick={() => handleAnswer('agree')}>Agree</Button>
-        <Button variant="contained" onClick={() => handleAnswer('neutral')}>Neutral</Button>
-        <Button variant="contained" onClick={() => handleAnswer('disagree')}>Disagree</Button>
-        <Button variant="contained" onClick={() => handleAnswer('skip')}>Skip</Button>
+        <Button variant="contained" sx={{ backgroundColor: '#424242' }} onClick={() => handleAnswer(1)}>Agree</Button>
+        <Button variant="contained" sx={{ backgroundColor: '#424242' }} onClick={() => handleAnswer(0)}>Neutral</Button>
+        <Button variant="contained" sx={{ backgroundColor: '#424242' }} onClick={() => handleAnswer(-1)}>Disagree</Button>
+        <Button variant="contained" sx={{ backgroundColor: '#424242' }} onClick={() => handleAnswer(null)}>Skip</Button>
       </Box>
     </Box>
   );

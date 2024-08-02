@@ -25,7 +25,7 @@ const Navbar = () => {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button color="inherit" href="https://cardanofoundation.org" target="_blank">CF</Button>
           <Button color="inherit" href="https://cardanoacademy.io" target="_blank">Academy</Button>
-          <Button color="inherit" href="https://github.com" target="_blank">GitHub</Button>
+          <Button color="inherit" href="https://github.com/cardano-foundation/cf-java-rewards-calculation" target="_blank">GitHub</Button>
         </Box>
       </Toolbar>
     </AppBar>

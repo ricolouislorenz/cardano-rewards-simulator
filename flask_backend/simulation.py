@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Erlaubt Cross-Origin-Anfragen
+CORS(app) 
 
 @app.route('/api/rewards', methods=['POST'])
 def rewards_simulation():

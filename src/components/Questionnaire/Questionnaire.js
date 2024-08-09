@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Question from './Question';
 import NavigationBar from './NavigationBar';
@@ -16,6 +16,16 @@ const questions = [
   'Scalability should be prioritized to enable global applications of blockchain.',
   'A blockchain system should be able to process large volumes of transactions quickly.',
   'I trust a decentralized system more, even if it is harder to use.',
+  'Placeholder question 11',
+  'Placeholder question 12',
+  'Placeholder question 13',
+  'Placeholder question 14',
+  'Placeholder question 15',
+  'Placeholder question 16',
+  'Placeholder question 17',
+  'Placeholder question 18',
+  'Placeholder question 19',
+  'Placeholder question 20',
 ];
 
 const totalQuestions = questions.length;
@@ -31,40 +41,63 @@ const weights = [
   { decentralization: 0, scalability: 0.2, security: 0, adoption: 0.2 },
   { decentralization: 0, scalability: 0.2, security: 0, adoption: 0 },
   { decentralization: 0.2, scalability: 0, security: 0, adoption: -0.2 },
+  { decentralization: 0.1, scalability: 0.1, security: 0, adoption: 0 },
+  { decentralization: 0, scalability: 0.1, security: 0.1, adoption: 0 },
+  { decentralization: 0, scalability: 0, security: 0.1, adoption: 0.1 },
+  { decentralization: 0.1, scalability: 0, security: 0, adoption: 0.1 },
+  { decentralization: -0.1, scalability: -0.1, security: 0, adoption: 0 },
+  { decentralization: 0, scalability: -0.1, security: -0.1, adoption: 0 },
+  { decentralization: 0, scalability: 0, security: -0.1, adoption: -0.1 },
+  { decentralization: -0.1, scalability: 0, security: 0, adoption: -0.1 },
+  { decentralization: 0.1, scalability: 0, security: 0.1, adoption: -0.1 },
+  { decentralization: -0.1, scalability: 0.1, security: -0.1, adoption: 0 },
 ];
 
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
 const Questionnaire = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1);
   const [answers, setAnswers] = useState(Array(totalQuestions).fill(null));
-  const [scores, setScores] = useState(Array(totalQuestions).fill({ decentralization: 0, scalability: 0, security: 0, adoption: 0 }));
+  const [scores, setScores] = useState({ decentralization: 0, scalability: 0, security: 0, adoption: 0 });
   const navigate = useNavigate();
 
   const handleAnswer = (index, answer, weight) => {
+    console.log(`Handling answer for question ${index + 1}:`, answer);
     const newAnswers = [...answers];
     newAnswers[index] = answer;
     setAnswers(newAnswers);
 
-    const newScores = [...scores];
-    newScores[index] = weight;
+    const newScores = { ...scores };
+    if (answer === 1) {
+      newScores.decentralization = clamp(newScores.decentralization + weight.decentralization, -1, 1);
+      newScores.scalability = clamp(newScores.scalability + weight.scalability, -1, 1);
+      newScores.security = clamp(newScores.security + weight.security, -1, 1);
+      newScores.adoption = clamp(newScores.adoption + weight.adoption, -1, 1);
+    } else if (answer === -1) {
+      newScores.decentralization = clamp(newScores.decentralization - weight.decentralization, -1, 1);
+      newScores.scalability = clamp(newScores.scalability - weight.scalability, -1, 1);
+      newScores.security = clamp(newScores.security - weight.security, -1, 1);
+      newScores.adoption = clamp(newScores.adoption - weight.adoption, -1, 1);
+    }
+    console.log(`Updated scores:`, newScores);
     setScores(newScores);
 
-    const allAnswered = newAnswers.every(answer => answer !== null);
-
-    if (allAnswered) {
-      navigate('/evaluation', { state: { scores: newScores } });
+    const nextHigherIndex = newAnswers.slice(index + 1).findIndex(answer => answer === null);
+    if (nextHigherIndex !== -1) {
+      setCurrentQuestionIndex(index + nextHigherIndex + 1);
     } else {
-      const higherUnanswered = newAnswers.slice(index + 1).findIndex(answer => answer === null);
-      if (higherUnanswered !== -1) {
-        setCurrentQuestionIndex(index + higherUnanswered + 1 + 1);
+      const nextIndex = newAnswers.findIndex(answer => answer === null);
+      if (nextIndex !== -1) {
+        setCurrentQuestionIndex(nextIndex);
       } else {
-        const firstUnanswered = newAnswers.findIndex(answer => answer === null);
-        setCurrentQuestionIndex(firstUnanswered + 1);
+        console.log('All questions answered. Navigating to evaluation...');
+        navigate('/evaluation', { state: { scores: newScores } });
       }
     }
   };
 
   const startQuestionnaire = () => {
-    setCurrentQuestionIndex(1);
+    setCurrentQuestionIndex(0);
   };
 
   const goToQuestion = (index) => {
@@ -76,7 +109,7 @@ const Questionnaire = () => {
       <Typography variant="h3" component="h1" gutterBottom sx={{ marginTop: '20px' }}>
         Questionnaire
       </Typography>
-      {currentQuestionIndex === 0 ? (
+      {currentQuestionIndex === -1 ? (
         <Box>
           <Typography variant="h6" gutterBottom>
             The questionnaire is designed to capture user preferences across four dimensions: Scalability, Security, Decentralization (the Blockchain Trilemma), and Adoption, which is a crucial factor for Cardano.
@@ -96,10 +129,10 @@ const Questionnaire = () => {
         <Box>
           <Question
             key={`question-${currentQuestionIndex}`}
-            question={questions[currentQuestionIndex - 1]}
-            index={currentQuestionIndex - 1}
+            question={questions[currentQuestionIndex]}
+            index={currentQuestionIndex}
             onAnswer={handleAnswer}
-            weight={weights[currentQuestionIndex - 1]}
+            weight={weights[currentQuestionIndex]}
           />
           <Box sx={{ marginTop: '40px' }}>
             <NavigationBar current={currentQuestionIndex} total={totalQuestions} onNavigate={goToQuestion} answers={answers} />

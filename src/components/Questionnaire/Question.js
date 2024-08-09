@@ -11,13 +11,7 @@ const Question = ({ question, index, onAnswer, weight }) => {
 
   const handleAnswer = (answer) => {
     console.log(`Answer for question ${index + 1}:`, answer);
-    const weightedAnswer = {
-      decentralization: weight.decentralization * answer,
-      scalability: weight.scalability * answer,
-      security: weight.security * answer,
-      adoption: weight.adoption * answer,
-    };
-    onAnswer(index, answer, weightedAnswer);
+    onAnswer(index, answer, weight);
   };
 
   return (
